@@ -15,9 +15,31 @@ void ADCSampler::init(void)
   }
 }
 
-private void calcTurb() {
-	float mean180 = 0; float mean90 = 0;
-	for(int i = 0; i < numberOfTurbidityPoints; 
+float ADCSampler::calcTurbAvg(float * lastVals) {
+	float mean = 0;
+	for(int i = 0; i < numberOfTurbidityPoints; i++) {
+		mean += lastVals[i];
+	}
+	mean = mean / numberOfTurbidityPoints;
+	
+	float highSum = 0, lowSum = 0, highNum = 0, lowNum = 0;
+	for(int i = 0; i < numberOfTurbidityPoints; i++) {
+		if(lastVals[i] > mean) {
+			highSum += lastVals[i];
+			highNum++;
+		} else {
+			lowSum += lastVals[i];
+			lowNum++;
+		}
+	}
+	return ((highSum/highNum) - (lowSum/lowNum));
+}
+
+float ADCSampler::calcTurb(void) {
+	float turb90avg  = calcTurbAvg(lastTurb90);
+	float turb180avg = calcTurbAvg(lastTurb180);
+	float ratio      = turb90avg / turb180avg;
+	return((turbiditySlope * ratio) + turbidityIntercept); // in ntu
 }
 
 void ADCSampler::updateSample(void)
@@ -33,10 +55,10 @@ void ADCSampler::updateSample(void)
   IRVolts = analogRead(17);
   greenVolts = analogRead(16);
   
-  lastTurb90[currentTurbidityIdx]  = analogRead();
-  lastTurb180[currentTurbidityIdx] = analogRead();
-  currentTurbidityIdx++;
-  turbidity = calcTurb();
+  lastTurb90[currentTurbidityIdx]  = analogRead(15);
+  lastTurb180[currentTurbidityIdx] = analogRead(14);
+  currentTurbidityIdx = (currentTurbidityIdx + 1) % numberOfTurbidityPoints;
+  turbidity = calcTurb(); // in ntu
 }
 
 String ADCSampler::printSample(void)
@@ -46,6 +68,21 @@ String ADCSampler::printSample(void)
     printString += " ";
     printString += String(sample[i]);
   }
+  return printString;
+}
+
+String ADCSampler::printEnvironmentalInfo(void)
+{
+  String printString = "ADC:";
+  printString += "Turbidity = "
+  printString += String(turbidity);
+  printString += " [ntu], ";
+  printString += "Visable light = "
+  printString += String(0);
+  printString += " [lux], ";
+  printString += "IR light = "
+  printString += String(0);
+  printString += " [lux]";
   return printString;
 }
 
