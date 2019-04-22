@@ -105,16 +105,17 @@ void loop() {
   if ( currentTime-printer.lastExecutionTime > LOOP_PERIOD ) {
     printer.lastExecutionTime = currentTime;
     printer.printValue(0,adc.printSample());
-    printer.printValue(1,ef.printStates());
-    printer.printValue(2,logger.printState());
-    printer.printValue(3,gps.printState());   
-    printer.printValue(4,state_estimator.printState());     
-    printer.printValue(5,pcontrol.printWaypointUpdate());
-    printer.printValue(6,pcontrol.printString());
-    printer.printValue(7,pcontrol.printString2());
-    printer.printValue(8,motor_driver.printState());
-    printer.printValue(9,imu.printRollPitchHeading());        
-    printer.printValue(10,imu.printAccels());
+    printer.printValue(1,adc.printEnvironmentalInfo());
+    printer.printValue(2,ef.printStates());
+    printer.printValue(3,logger.printState());
+    printer.printValue(4,gps.printState());   
+    printer.printValue(5,state_estimator.printState());
+    printer.printValue(6,pcontrol.printWaypointUpdate());
+    printer.printValue(7,pcontrol.printString());
+    printer.printValue(8,pcontrol.printString2());
+    printer.printValue(9,motor_driver.printState());
+    printer.printValue(10,imu.printRollPitchHeading());        
+    printer.printValue(11,imu.printAccels());
     printer.printToSerial();  // To stop printing, just comment this line out
   }
 

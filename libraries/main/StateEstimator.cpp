@@ -3,6 +3,8 @@
 #include "Printer.h"
 extern Printer printer;
 
+#define usingLightForDepth 0
+
 inline float angleDiff(float a) {
   while (a<-PI) a += 2*PI;
   while (a> PI) a -= 2*PI;
@@ -20,18 +22,25 @@ void StateEstimator::init() {
   state.depth = 0;
 }
 
-float measurementToDepth(float teensyUnits) {
+float pressureToDepth(float teensyUnits) {
 	float depth = (depthConvertSlope * teensyUnits) + depthConvertIntercept;
 	return depth;
 }
 
-float lightToDepth(float lightRatio) {
-	float depth = (lightRatio);
+float lightRatioToDepth(float IRToVisRatio) {
+	float depth = lightRatio_a * log(lightRatio_b * IRToVisRatio);
 	return depth;
 }
 
 void StateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_state_p, ADCSampler * adc_sampler) {
-  state.depth = measurementToDepth(adc_sampler->readDepth); /////////////////////////////////////////
+  if(usingLightForDepth) {
+	  float IRToVisRatio = ((float) adc_sampler->IRVolts) / ((float) adc_sampler->greenVolts);
+	  // ^ in teensy units even though it says volts
+	  state.depth = lightRatioToDepth(IRToVisRatio);
+  } else {
+	  state.depth = pressureToDepth(adc_sampler->readDepth);
+  }
+  
   if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
     gpsAcquired = 1;
 

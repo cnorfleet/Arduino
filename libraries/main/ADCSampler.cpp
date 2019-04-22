@@ -54,6 +54,8 @@ void ADCSampler::updateSample(void)
   readDepth = analogRead(26);
   IRVolts = analogRead(17);
   greenVolts = analogRead(16);
+  IRLight    = IRVolts    * teensyUToIRLight;  // in lux
+  greenLight = greenVolts * teensyUToVisLight; // in lux
   
   lastTurb90[currentTurbidityIdx]  = analogRead(15);
   lastTurb180[currentTurbidityIdx] = analogRead(14);
@@ -73,15 +75,15 @@ String ADCSampler::printSample(void)
 
 String ADCSampler::printEnvironmentalInfo(void)
 {
-  String printString = "ADC:";
-  printString += "Turbidity = "
+  String printString = "ADC: ";
+  printString += "Turbidity = ";
   printString += String(turbidity);
   printString += " [ntu], ";
-  printString += "Visable light = "
-  printString += String(0);
+  printString += "Vis = ";
+  printString += String(greenLight);
   printString += " [lux], ";
-  printString += "IR light = "
-  printString += String(0);
+  printString += "IR = ";
+  printString += String(IRLight);
   printString += " [lux]";
   return printString;
 }

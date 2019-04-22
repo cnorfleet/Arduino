@@ -10,9 +10,14 @@
 
 #define RADIUS_OF_EARTH_M 6371000 // [m]
 
-// teensyUnits to depthh in meters calibration curve values
+// teensyUnits to depth in meters calibration curve values
 #define depthConvertIntercept -210.13
 #define depthConvertSlope     1.5241
+
+// using light for depth calibration curve values:
+// depth [cm] = a * ln (b * (IR [teensy]) / (Vis [teensy]))
+#define lightRatio_a 1 ///////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#define lightRatio_b 1
 
 typedef struct {
   float x = 0; // x position in global frame [m]

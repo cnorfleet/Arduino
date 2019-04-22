@@ -16,6 +16,9 @@
 #define turbiditySlope   14471.780
 #define turbidityIntercept -60.492
 
+#define teensyUToVisLight 110.6623 // (200 * 1000000/5830 * 3.3/1023)
+#define teensyUToIRLight  3.2258   // (80  *    1000/80   * 3.3/1023)
+
 class ADCSampler : public DataSource
 {
 public:
@@ -26,9 +29,11 @@ public:
   // Managing state
   int sample [NUM_PINS];
   int readDepth;
-  int IRVolts;
-  int greenVolts;
-  float turbidity; // in ntu
+  int IRVolts;      // in teensy units
+  float IRLight;    // in lux
+  int greenVolts;   // in teensy units
+  float greenLight; // in lux
+  float turbidity;  // in ntu
   void updateSample(void);
   String printSample(void);
   String printEnvironmentalInfo(void);

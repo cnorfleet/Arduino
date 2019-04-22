@@ -28,7 +28,7 @@ public:
 
 private:
   // highest allowed row number (for both errors and values)
-  static const int maxRow = 11;
+  static const int maxRow = 12;
 
   // stores all repeatedly printed information
   char printInfo[maxRow][LONGEST_STRING];
