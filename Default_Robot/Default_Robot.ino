@@ -49,10 +49,15 @@ int currentTime;
 int current_way_point = 0;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
-double waypoints [] = { 0,  0,  -1,
+
+const int number_of_waypoints = 2;
+const int waypoint_dimensions = 3;       // waypoints are set to have three pieces of information, x then y then depth.
+double waypoints [] = { 30,  -5,  -1,
+                        0,  0,  -1 };
+/*double waypoints [] = { 0,  0,  -1,
                         0,  0,  100,
                         0,  0,  0,
-                        0,  0,  -1 };
+                        0,  0,  -1 };*/
 // ^ listed as x0,y0,z0,x1,y1,z1, ... etc.
 // x y in meters, depth in cm
 
@@ -77,9 +82,6 @@ void setup() {
   gps.init(&GPS);
   motor_driver.init();
   led.init();
-
-  const int number_of_waypoints = 2;
-  const int waypoint_dimensions = 3;       // waypoints are set to have three pieces of information, x then y then depth.
   pcontrol.init(number_of_waypoints, waypoint_dimensions, waypoints, millis());
   
   state_estimator.init(); 

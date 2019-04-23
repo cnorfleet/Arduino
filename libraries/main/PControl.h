@@ -1,7 +1,7 @@
 #ifndef __PCONTROL_H__
 #define __PCONTROL_H__
 
-#define SUCCESS_RADIUS 6.0 // success radius in meters
+#define SUCCESS_RADIUS 2.0 // success radius in meters
 #define SUCCESS_RADIUS_DIVE 10
 #define UP_MOTOR_DEFAULT 100
 
