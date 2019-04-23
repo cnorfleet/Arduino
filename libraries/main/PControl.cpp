@@ -90,6 +90,7 @@ String PControl::printString2(void) {
   //}
   //else{
     printString += "PControl: ";
+    printString += ((u > 0) ? "Left,  " : "Right, ");
     printString += "u: ";
     printString += String(u);
     printString += ", u_L: ";
@@ -140,19 +141,19 @@ void PControl::updatePoint(float x, float y) {
 		
 		if((depth_des == -1 && dist < SUCCESS_RADIUS) ||
 		   (depth_des != -1 && dist < SUCCESS_RADIUS_DIVE)) {
-		String changingWPMessage = "Got to waypoint " + String(currentWayPoint)
-		  + ", now directing to next point";
-		int cwpmTime = 20;
-		currentWayPoint++;
-		if (currentWayPoint == totalWayPoints) {
-		  changingWPMessage = "Congratulations! You completed the path! Stopping motors.";
-		  uR=0;
-		  uL=0;
-		  uV=UP_MOTOR_DEFAULT;
-		  cwpmTime = 0;
+			String changingWPMessage = "Got to waypoint " + String(currentWayPoint)
+			  + ", now directing to next point";
+			int cwpmTime = 20;
+			currentWayPoint++;
+			if (currentWayPoint == totalWayPoints) {
+			  changingWPMessage = "Congratulations! You completed the path! Stopping motors.";
+			  uR=0;
+			  uL=0;
+			  uV=UP_MOTOR_DEFAULT;
+			  cwpmTime = 0;
+			}
+			printer.printMessage(changingWPMessage,cwpmTime);
 		}
-		printer.printMessage(changingWPMessage,cwpmTime);
-	}
 	}
 }
 
