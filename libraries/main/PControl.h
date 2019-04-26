@@ -1,11 +1,11 @@
 #ifndef __PCONTROL_H__
 #define __PCONTROL_H__
 
-#define SUCCESS_RADIUS 2.0 // success radius in meters
-#define SUCCESS_RADIUS_DIVE 10
-#define UP_MOTOR_DEFAULT 100
+#define SUCCESS_RADIUS 5.0    // success radius in meters
+#define SUCCESS_RADIUS_DIVE 4 // success radius in cm
+#define UP_MOTOR_DEFAULT 100  // PWM
 
-#define ABORT_TIME 300000//in ms
+#define ABORT_TIME 480000     // in ms, 8 minutes
 
 #include <Arduino.h>
 #include "MotorDriver.h"
@@ -43,18 +43,20 @@ public:
   float Kl=1.0;          // left motor gain correction
   float Kv=20.0;
   float avgPower = 20.0; // average forward thrust
-  float uR;             // right motor effort
-  float uL;             // left motor effort
+  float uR;              // right motor effort
+  float uL;              // left motor effort
   float depth;
   float depth_des;
   float uV;              // up/down motor effort
 
 
 private:
-
   // updates the current waypoint if necessary
-  void updatePoint(float x, float y);
+  void updatePoint(float x, float y, unsigned long currentTime);
   unsigned long startTime;
+  void goToNextWaypoint();
+  bool reachedWaypoint = false;
+  unsigned long waypointReachedTime;
 
   int getWayPoint(int dim);
 

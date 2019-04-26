@@ -3,8 +3,8 @@
 extern Printer printer;
 
 inline float angleDiff(float a) {
-  while (a<-PI) a += 2*PI;
-  while (a> PI) a -= 2*PI;
+  while (a<=-PI) a += 2*PI;
+  while (a> PI)  a -= 2*PI;
   return a;
 }
 
@@ -35,7 +35,7 @@ void PControl::calculateControl(state_t * state, gps_state_t * gps_state_p, unsi
 	  if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
 		gpsAcquired = 1;
 
-		updatePoint(state->x, state->y);
+		updatePoint(state->x, state->y, currentTime);
 		if (currentWayPoint == totalWayPoints) return; // stops motors at final point
 
 		// Set the values of yaw_des, yaw, control effort (u), uL, and uR appropriately
@@ -43,8 +43,8 @@ void PControl::calculateControl(state_t * state, gps_state_t * gps_state_p, unsi
 		// You can access the x and y coordinates calculated in StateEstimator.cpp using state->x and state->y respectively
 		// You can access the heading calculated in StateEstimator.cpp using state->heading
 		
-		yaw_des = atan2(y_des - state->y, x_des - state->x);
-		yaw = state->yaw;
+		yaw_des = atan2(y_des - state->y, x_des - state->x); // radians from -pi to pi
+		yaw = state->yaw;                                    // radians from -pi to pi
 		u = Kp*angleDiff(yaw_des - yaw);
 
 		uL = max(0.0,min(255.0,(avgPower - u)*Kl));
@@ -52,9 +52,12 @@ void PControl::calculateControl(state_t * state, gps_state_t * gps_state_p, unsi
 	  }
 	  else{
 		gpsAcquired = 0;
+		uL = 0;
+		uR = 0;
 	  }
 	}
 	else {
+		updatePoint(0, 0, currentTime);
 		uL = 0;
 		uR = 0;
 		uV = Kv * (depth - depth_des);
@@ -125,8 +128,31 @@ String PControl::printWaypointUpdate(void) {
   return wayPointUpdate;
 }
 
-void PControl::updatePoint(float x, float y) {
+void PControl::goToNextWaypoint() {
+	String changingWPMessage = "Got to waypoint " + String(currentWayPoint)
+	  + ", now directing to next point";
+	int cwpmTime = 20;
+	reachedWaypoint = false;
+	currentWayPoint++;
+	if (currentWayPoint == totalWayPoints) {
+	  changingWPMessage = "Congratulations! You completed the path! Stopping motors.";
+	  uR=0;
+	  uL=0;
+	  uV=UP_MOTOR_DEFAULT;
+	  cwpmTime = 0;
+	}
+	printer.printMessage(changingWPMessage,cwpmTime);
+}
+
+void PControl::updatePoint(float x, float y, unsigned long currentTime) {
 	if (currentWayPoint == totalWayPoints) return; // don't check if finished
+	
+	if (reachedWaypoint) {
+		if(currentTime > waypointReachedTime + getWayPoint(3)) {
+			goToNextWaypoint();
+		}
+		return;
+	}
 
 	int x_des = getWayPoint(0);
 	int y_des = getWayPoint(1);
@@ -141,18 +167,12 @@ void PControl::updatePoint(float x, float y) {
 		
 		if((depth_des == -1 && dist < SUCCESS_RADIUS) ||
 		   (depth_des != -1 && dist < SUCCESS_RADIUS_DIVE)) {
-			String changingWPMessage = "Got to waypoint " + String(currentWayPoint)
-			  + ", now directing to next point";
-			int cwpmTime = 20;
-			currentWayPoint++;
-			if (currentWayPoint == totalWayPoints) {
-			  changingWPMessage = "Congratulations! You completed the path! Stopping motors.";
-			  uR=0;
-			  uL=0;
-			  uV=UP_MOTOR_DEFAULT;
-			  cwpmTime = 0;
+			if (getWayPoint(3) <= 0) {
+				goToNextWaypoint();
+			} else {
+				reachedWaypoint = true;
+				waypointReachedTime = currentTime;
 			}
-			printer.printMessage(changingWPMessage,cwpmTime);
 		}
 	}
 }

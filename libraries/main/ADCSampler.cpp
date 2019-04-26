@@ -80,11 +80,11 @@ String ADCSampler::printEnvironmentalInfo(void)
   printString += String(turbidity);
   printString += " [ntu], ";
   printString += "Vis = ";
-  printString += String(greenLight);
-  printString += " [lux], ";
+  printString += String(((float) greenVolts) * 3.3 / 1023);
+  printString += " [V], ";
   printString += "IR = ";
-  printString += String(IRLight);
-  printString += " [lux]";
+  printString += String(((float) IRVolts) * 3.3 / 1023);
+  printString += " [V]";
   return printString;
 }
 

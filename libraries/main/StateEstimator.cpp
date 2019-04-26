@@ -6,8 +6,8 @@ extern Printer printer;
 #define usingLightForDepth 0
 
 inline float angleDiff(float a) {
-  while (a<-PI) a += 2*PI;
-  while (a> PI) a -= 2*PI;
+  while (a<=-PI) a += 2*PI;
+  while (a>  PI) a -= 2*PI;
   return a;
 }
 
@@ -52,7 +52,7 @@ void StateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_st
     // get heading
     float heading_rad = imu_state_p->heading*PI/180.0; // convert to radians
     float yaw_rad = -heading_rad + PI/2.0; // adjust from 0=North, CWW=(+) to 0=East, CCW=(+)
-    state.yaw = angleDiff(yaw_rad);
+    state.yaw = angleDiff(yaw_rad);  // in radians
     
   }
   else{

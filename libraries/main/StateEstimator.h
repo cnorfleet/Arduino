@@ -53,8 +53,8 @@ public:
 
 private:
   // set coordinates of chosen origin below
-  const float origin_lat = 34.1061325;   // 34.1093063;   // 34.1095009;   // 34.106465;
-  const float origin_lon = -117.7113419; // -117.7127151; // -117.7128448; // -117.712488;
+  const float origin_lat = 34.1040840;   // 34.1093063;   // 34.1095009;   // 34.106465;
+  const float origin_lon = -117.7039871; // -117.7127151; // -117.7128448; // -117.712488;
   bool gpsAcquired;
   
   float lightRatio = 0; //ratio of green to IR light (in terms of irradiance)
