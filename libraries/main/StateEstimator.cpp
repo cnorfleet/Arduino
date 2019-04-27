@@ -27,16 +27,23 @@ float pressureToDepth(float teensyUnits) {
 	return depth;
 }
 
-float lightRatioToDepth(float IRToVisRatio) {
-	float depth = lightRatio_a * log(lightRatio_b * IRToVisRatio);
+float StateEstimator::lightRatioToDepth(float IRTeensyUnits) {
+	lastIR[currentIRIdx] = IRTeensyUnits;
+	currentIRIdx = (currentIRIdx + 1) % numberOfIRPoints;
+	float avgIR = 0;
+	for(int i = 0; i < numberOfIRPoints; i++) {
+		avgIR = avgIR + lastIR[i];
+	}
+	avgIR = avgIR / numberOfIRPoints;
+	float depth = lightRatio_a * log(lightRatio_b * avgIR);
 	return depth;
 }
 
 void StateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_state_p, ADCSampler * adc_sampler) {
   if(usingLightForDepth) {
-	  float IRToVisRatio = ((float) adc_sampler->IRVolts) / ((float) adc_sampler->greenVolts);
+	  // float IRToVisRatio = ((float) adc_sampler->IRVolts) / ((float) adc_sampler->greenVolts);
 	  // ^ in teensy units even though it says volts
-	  state.depth = lightRatioToDepth(IRToVisRatio);
+	  state.depth = lightRatioToDepth(adc_sampler->IRVolts);
   } else {
 	  state.depth = pressureToDepth(adc_sampler->readDepth);
   }

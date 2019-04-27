@@ -50,9 +50,12 @@ int current_way_point = 0;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
 
-const int number_of_waypoints = 9;
+const int number_of_waypoints = 11;
 const int waypoint_dimensions = 4;       // waypoints are set to have 4 pieces of information, x then y then depth then time to stay at waypoint.
-double waypoints [] = { 10,    0,   -1,    0,
+double waypoints [] = { 10,    0,   10,    5000,
+                        10,    0,    0,    0,
+                       -10,    0,   -1,    0};
+/*double waypoints [] = { 10,    0,   -1,    0,
                         10,    0,   50,    1000,
                         10,    0,    0,    1000,
                         10,    0,  100,    1000,
@@ -60,7 +63,7 @@ double waypoints [] = { 10,    0,   -1,    0,
                         15,    0,   -1,    0,
                         15,    0,  100,    2000,
                         15,    0,    0,    0,
-                       -10,    0,   -1,    0};
+                       -10,    0,   -1,    0};*/
 // ^ listed as x0,y0,z0,t0,x1,y1,z1,t1, ... etc.
 // x y in meters, depth in cm, time in milliseconds (# seconds * 1000)
 

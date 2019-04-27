@@ -16,8 +16,9 @@
 
 // using light for depth calibration curve values:
 // depth [cm] = a * ln (b * (IR [teensy]) / (Vis [teensy]))
-#define lightRatio_a 1 ///////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define lightRatio_b 1
+#define lightRatio_a -20.9634
+#define lightRatio_b 0.0058
+#define numberOfIRPoints 20
 
 typedef struct {
   float x = 0; // x position in global frame [m]
@@ -53,11 +54,16 @@ public:
 
 private:
   // set coordinates of chosen origin below
-  const float origin_lat = 34.1040840;   // 34.1093063;   // 34.1095009;   // 34.106465;
-  const float origin_lon = -117.7039871; // -117.7127151; // -117.7128448; // -117.712488;
+  const float origin_lat = 34.1040421;   // 34.1093063;   // 34.1095009;   // 34.106465;
+  const float origin_lon = -117.7039566; // -117.7127151; // -117.7128448; // -117.712488;
   bool gpsAcquired;
   
   float lightRatio = 0; //ratio of green to IR light (in terms of irradiance)
+  
+  float lightRatioToDepth(float IRTeensyUnits);
+  int currentIRIdx = 0;
+  float lastIR[numberOfIRPoints] = {0,0,0,0,0,0,0,0,0,0,
+									0,0,0,0,0,0,0,0,0,0};
 };
 
 #endif
