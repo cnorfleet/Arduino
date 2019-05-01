@@ -50,12 +50,26 @@ int current_way_point = 0;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
 
-const int number_of_waypoints = 11;
+const int number_of_waypoints = 3;
 const int waypoint_dimensions = 4;       // waypoints are set to have 4 pieces of information, x then y then depth then time to stay at waypoint.
-double waypoints [] = { 10,    0,   10,    5000,
-                        10,    0,    0,    0,
-                       -10,    0,   -1,    0};
-/*double waypoints [] = { 10,    0,   -1,    0,
+double waypoints [] = { 0,    20,     -1,   0, // great robot race
+                        63,   83,     -1,   0,
+                        13,   33,     -1,   0};
+/*double waypoints [] = { 10,   0,     50,   5000, // dock
+                        10,   0,     100,  5000,
+                        10,   0,     150,  5000,
+                        10,   0,     200,  10000,
+                        10,   0,     250,  10000,
+                        10,   0,     0,    0,
+                        -10,    0,     -1,   0};*/
+/*double waypoints [] = { 0,    -35,   -1,   0, // beach
+                        0,    -35,   50,   60000,
+                        0,    -35,   100,  60000,
+                        0,    -35,   150,  60000,
+                        0,    -35,   200,  60000,
+                        0,    -35,   0,    0, 
+                        0,    0,     -1,   0};*/
+/*double waypoints [] = { 10,    0,   -1,    0, // pitzer
                         10,    0,   50,    1000,
                         10,    0,    0,    1000,
                         10,    0,  100,    1000,

@@ -64,7 +64,8 @@ void PControl::calculateControl(state_t * state, gps_state_t * gps_state_p, unsi
 	}
 	
 	if(currentTime > startTime + ABORT_TIME) {
-		uV = 255;
+		uV = UP_MOTOR_DEFAULT;
+		currentWayPoint = totalWayPoints-1;
 	}
 }
 

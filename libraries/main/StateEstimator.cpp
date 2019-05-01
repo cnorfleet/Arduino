@@ -24,7 +24,7 @@ void StateEstimator::init() {
 
 float pressureToDepth(float teensyUnits) {
 	float depth = (depthConvertSlope * teensyUnits) + depthConvertIntercept;
-	return depth;
+	return (depth - 55.84);
 }
 
 float StateEstimator::lightRatioToDepth(float IRTeensyUnits) {
